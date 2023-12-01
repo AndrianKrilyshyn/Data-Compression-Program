@@ -48,7 +48,7 @@ public class NodeList {
     public void entryListFromKeyboard() throws IOException {
         System.out.print("\n Needed temporary file ");
      //  FileWriter fileWriter = FileHelper.newFilewriter();
-        FileWriter fileWriter = new FileWriter("D:\\data\\Coursework.txt");//newFilewriter();
+        FileWriter fileWriter = new FileWriter("G:\\data\\Coursework.txt");//newFilewriter();
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String word = scanner.nextLine();
@@ -66,7 +66,7 @@ public class NodeList {
     public void entryListFromFile() throws IOException {
         System.out.println(" Source file");
         // File file = FileHelper.openFile();
-        File file = new File("D:\\data\\Coursework.txt");
+        File file = new File("G:\\data\\Coursework.txt");
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) {
             String word = scanner.nextLine();
@@ -143,13 +143,15 @@ public class NodeList {
     }
     //public File createDictionary() throws IOException {
     public void createDictionary() throws IOException {
-        //String filePath = FileHelper.getFilePath();
-        //File file = new File(filePath);
-        FileWriter fileWriter = FileHelper.newFilewriter("D:\\data\\CourseworkDictionary.txt");
+        String filePath = "G:\\data\\CourseworkDictionary.txt";//FileHelper.getFilePath();
+//        File file = new File(filePath);
+        //FileWriter fileWriter = FileHelper.newFilewriter(filePath);
+        FileWriter fileWriter = new FileWriter(filePath);
         for (Node node: nodeList) {
             String element = node.getSymbol()+" "+ node.getCode()+"\n";
             fileWriter.write(element);
         }
+        fileWriter.close();
         //return file;
     }
 
@@ -257,7 +259,7 @@ public class NodeList {
             fileWriter.close();
         }*/
     public void print() throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream("D:\\data\\CourseworkRes.bin");
+        FileOutputStream fileOutputStream = new FileOutputStream("G:\\data\\CourseworkRes.bin");
         DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
         for (long i = 0; i < 10000; i++) {
             dataOutputStream.write(0b101);
@@ -312,9 +314,9 @@ public class NodeList {
         }*/
     public void encodeText() throws IOException {
         System.out.println("Source file: ");
-        File inputFile = new File("D:\\data\\Coursework.txt");
+        File inputFile = new File("G:\\data\\Coursework.txt");
         System.out.println("Binary output file: ");
-        File outputFile = new File("D:\\data\\CourseworkRes.bin");
+        File outputFile = new File("G:\\data\\CourseworkRes.bin");
 
         FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
         DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
@@ -435,9 +437,10 @@ public class NodeList {
 
     public void decodeText() throws IOException {
         System.out.println("Binary input file: ");
-        File inputFile = new File("D:\\data\\CourseworkRes.bin");
+        File inputFile = new File("G:\\data\\CourseworkRes.bin");
+        File outputFile = new File("G:\\data\\CourseworkDecode.txt");
         System.out.println("Decoded output file: ");
-        FileWriter fileWriter = new FileWriter("D:\\data\\CourseworkDecode.txt");
+        FileWriter fileWriter = new FileWriter(outputFile);
 
         FileInputStream fileInputStream = new FileInputStream(inputFile);
         DataInputStream dataInputStream = new DataInputStream(fileInputStream);
@@ -470,6 +473,7 @@ public class NodeList {
         }
         fileInputStream.close();
         dataInputStream.close();
+        fileWriter.close();
 
 
     }

@@ -27,12 +27,12 @@ public class Main {
 
     }
     public static void test() throws IOException {
-        File file = FileHelper.openFile("D:\\data\\text.txt");
+        File file = FileHelper.openFile("G:\\data\\text.txt");
         int x = 100;
         FileWriter fileWriter =  new FileWriter(file);
         fileWriter.write(x);
         fileWriter.close();
-        File file1 = FileHelper.openFile("D:\\data\\t2.txt");
+        File file1 = FileHelper.openFile("G:\\data\\t2.txt");
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()){
             System.out.println(scanner.next());

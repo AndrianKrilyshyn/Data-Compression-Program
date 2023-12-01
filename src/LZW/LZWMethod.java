@@ -26,12 +26,12 @@ public class LZWMethod {
 
     public void encodeText(int mode) throws IOException {
         Scanner scanner;
-        File fileForWrite = FileHelper.openFile("D:\\data\\LZWCoded.txt");
+        File fileForWrite = FileHelper.openFile("G:\\data\\LZWCoded.txt");
         FileWriter fileWriter = new FileWriter(fileForWrite);
         if(mode==1){
             System.out.println(" Source file");
             //File file = FileHelper.openFile();
-            File file = new File("D:\\data\\LZWCoursework.txt");//openFile();
+            File file = new File("G:\\data\\LZWCoursework.txt");//openFile();
              scanner = new Scanner(file);
         }else{
              scanner = new Scanner(System.in);
@@ -42,13 +42,13 @@ public class LZWMethod {
             if (word.isEmpty()) {
                 break;
             }
-            System.out.println(encodeWord(word, fileWriter).toString());
+            encodeWord(word, fileWriter);
         }
         fileWriter.close();
         dictionary.printDictionary();
     }
 
-    public List<Integer> encodeWord(String word, FileWriter fileWriter) throws IOException {
+    public void encodeWord(String word, FileWriter fileWriter) throws IOException {
 
         List<Integer> result = new ArrayList<>();
         char[] symbolsArray = word.toCharArray();
@@ -68,13 +68,11 @@ public class LZWMethod {
             fileWriter.write(dictionary.getSymbolCode(totalSymbols));
             fileWriter.write(dictionary.getSymbolCode(" "));
         }
-
-        return result;
     }
 
     public void decodeText() throws IOException {
-        File fileOutput = new File("D:\\data\\LZWCoded.txt");
-        File fileInput = new File("D:\\data\\LZWDecoded.txt");
+        File fileOutput = new File("G:\\data\\LZWCoded.txt");
+        File fileInput = new File("G:\\data\\LZWDecoded.txt");
         Dictionary dictionary = new Dictionary(new ArrayList<>());
         FileWriter fileWriter = new FileWriter(fileInput);
         FileReader fileReader = new FileReader(fileOutput);

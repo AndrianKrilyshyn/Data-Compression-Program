@@ -31,18 +31,21 @@ public class Huffman implements Command {
         nodeList.createCode();
         try {
             nodeList.createDictionary();
+            System.out.println(" Dictionary created");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         //nodeList.printConnections();
         try {
             nodeList.encodeText();
+            System.out.println(" Text coded");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        nodeList.printList(nodeList.getNodeList());
+        //nodeList.printList(nodeList.getNodeList());
         try {
             nodeList.decodeText();
+            System.out.println(" Text decoded");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
