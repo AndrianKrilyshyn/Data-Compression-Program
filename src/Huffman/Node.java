@@ -1,10 +1,10 @@
 package Huffman;
 public class Node {
-    private char symbol='d';
-    private long frequency=1;
+    protected char symbol='d';
+    protected long frequency=1;
     private Node nextNode = null;
     private int weight=-1;
-    private String code;
+    protected String code;
 
 
     public Node(){}
