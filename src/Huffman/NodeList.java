@@ -5,11 +5,12 @@ import util.FileHelper;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class NodeList {
-    private ArrayList<Node> nodeList;
-    private ArrayList<Node> nodeActiveList;
+    private List<Node> nodeList;
+    private List<Node> nodeActiveList;
 
     public NodeList() {
     }
@@ -19,15 +20,15 @@ public class NodeList {
         this.nodeActiveList = nodeActiveList;
     }
 
-    public ArrayList<Node> getNodeList() {
+    public List<Node> getNodeList() {
         return nodeList;
     }
 
-    public void setNodeList(ArrayList<Node> nodeList) {
+    public void setNodeList(List<Node> nodeList) {
         this.nodeList = nodeList;
     }
 
-    public ArrayList<Node> getNodeActiveList() {
+    public List<Node> getNodeActiveList() {
         return nodeActiveList;
     }
 
@@ -136,7 +137,7 @@ public class NodeList {
         }
     }
 
-    public void printList(ArrayList<Node> nodeList) {
+    public void printList(List<Node> nodeList) {
         for (int i = 0; i < nodeList.size(); i++) {
             System.out.println(nodeList.get(i));
         }

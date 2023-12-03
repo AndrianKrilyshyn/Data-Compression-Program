@@ -1,25 +1,29 @@
 package ShannonFano;
 
+
+
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
 public class SymbolList {
 
-    private double numberOfSymbols;
+    private  double numberOfSymbols;
     private List<Symbol> listSymbols;
     private SymbolList left;
     private SymbolList right;
+    private SymbolList next;
     private int weight = 2;
     private boolean operated = false;
     public SymbolList(List<Symbol> listSymbols){
         this.listSymbols=listSymbols;
     }
 
-    public  void entryListFromFile() throws IOException {
+    public void entryListFromFile() throws IOException {
         System.out.println(" Source file");
         // File file = FileHelper.openFile();
-        File file = new File("G:\\data\\Coursework.txt");
+        File file = new File("G:\\data\\ShannonCoursework.txt");
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) {
             String word = scanner.nextLine();
@@ -31,6 +35,23 @@ public class SymbolList {
                 numberOfSymbols++;
             }
         }
+    }
+    public void entryListFromKeyboard() throws IOException {
+        System.out.print("\n Needed temporary file ");
+        //  FileWriter fileWriter = FileHelper.newFilewriter();
+        FileWriter fileWriter = new FileWriter("G:\\data\\ShannonCoursework.txt");//newFilewriter();
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String word = scanner.nextLine();
+            fileWriter.write(word);
+            if (word.isEmpty())
+                break;
+            for (int i = 0; i < word.length(); i++) {
+                char symbol = word.charAt(i);
+                createNewSymbol(symbol);
+            }
+        }
+        fileWriter.close();
     }
 
     public void createNewSymbol(char symbol) {
@@ -55,33 +76,35 @@ public class SymbolList {
     }
     public void createConnection(List<Symbol> listSymbols) {
         System.out.println(listSymbols);
-            int i = 0;
-            int j = listSymbols.size() - 1;
-            if(listSymbols.size()>2) {
-                double sum1 = listSymbols.get(i++).getProbability();
-                double sum2 = listSymbols.get(j--).getProbability();
-                while (i < j) {
-                    if (sum1 > sum2) {
-                        sum2 += listSymbols.get(j--).getProbability();
-                    } else {
-                        sum1 += listSymbols.get(i++).getProbability();
-                    }
-
+        int i = 0;
+        int j = listSymbols.size() - 1;
+        if(listSymbols.size()>2) {
+            double sum1 = listSymbols.get(i++).getProbability();
+            double sum2 = listSymbols.get(j--).getProbability();
+            while (i < j) {
+                if (sum1 > sum2) {
+                    sum2 += listSymbols.get(j--).getProbability();
+                } else {
+                    sum1 += listSymbols.get(i++).getProbability();
                 }
-                System.out.println(" LIST 1:");
-                left = new SymbolList(new ArrayList<>(listSymbols.subList(0, i)));
-                System.out.println(left + "\n PR: " + sumProbability(left.getListSymbols()));
-                System.out.println(" LIST 2:");
-                right = new SymbolList(new ArrayList<>(listSymbols.subList(j, listSymbols.size())));
-            }else{
-                left = new SymbolList(new ArrayList<>(listSymbols.subList(0, i+1)));
-                right = new SymbolList(new ArrayList<>(listSymbols.subList(j, listSymbols.size())));
 
             }
-            left.setWeight(0);
-            right.setWeight(1);
-            System.out.println(right + "\n PR: " + sumProbability(right.getListSymbols()));
-            operated=true;
+            //System.out.println(" LIST 1:");
+            left = new SymbolList(new ArrayList<>(listSymbols.subList(0, i)));
+            //System.out.println(left + "\n PR: " + sumProbability(left.getListSymbols()));
+            //System.out.println(" LIST 2:");
+            right = new SymbolList(new ArrayList<>(listSymbols.subList(j, listSymbols.size())));
+        }else{
+            left = new SymbolList(new ArrayList<>(listSymbols.subList(0, i+1)));
+            right = new SymbolList(new ArrayList<>(listSymbols.subList(j, listSymbols.size())));
+
+        }
+        left.setNext(this);
+        right.setNext(this);
+        left.setWeight(0);
+        right.setWeight(1);
+        //System.out.println(right + "\n PR: " + sumProbability(right.getListSymbols()));
+        operated=true;
     }
     public double sumProbability(List<Symbol> symbols){
         double result=0;
@@ -119,6 +142,14 @@ public class SymbolList {
         return operated;
     }
 
+    public SymbolList getNext() {
+        return next;
+    }
+
+    public void setNext(SymbolList next) {
+        this.next = next;
+    }
+
     public int getWeight() {
         return weight;
     }
@@ -141,3 +172,4 @@ public class SymbolList {
                 '}';
     }
 }
+

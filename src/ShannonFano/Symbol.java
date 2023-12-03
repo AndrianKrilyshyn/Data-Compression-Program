@@ -4,7 +4,7 @@ import Huffman.Node;
 
 public class Symbol extends Node {
     private double probability;
-
+    private Node nextNode = null;
     public Symbol(char symbol){
         this.symbol=symbol;
     }
@@ -16,6 +16,7 @@ public class Symbol extends Node {
     public void setProbability(double probability) {
         this.probability = probability;
     }
+
 
 
     //    @Override

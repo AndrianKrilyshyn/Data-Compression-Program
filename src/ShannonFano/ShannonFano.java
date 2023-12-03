@@ -1,77 +1,189 @@
 package ShannonFano;
 
-import java.io.IOException;
+import Huffman.NodeList;
+
+import java.io.*;
 import java.util.*;
 
 public class ShannonFano {
-    private List<Symbol> symbols;
-    private List<SymbolList> symbolLists;
+        private List<Symbol> symbols;
+        private List<SymbolList> symbolLists;
 
-    public ShannonFano(List<SymbolList> symbolLists) {
-        this.symbolLists = symbolLists;
-    }
+        public ShannonFano(List<SymbolList> symbolLists) {
+            this.symbolLists = symbolLists;
+        }
 
-    public void createTree() throws IOException {
-        SymbolList symbolList = new SymbolList(new ArrayList<>());
-        symbolList.entryListFromFile();
-        System.out.println(" ENTRY:");
-        System.out.println(symbolList);
-        symbolList.setUpProbability();
-        symbolList.getListSymbols().sort(new Comparator<Symbol>() {
-            @Override
-            public int compare(Symbol o1, Symbol o2) {
-                return o1.getProbability()>o2.getProbability()?-1:1;
+        public void createTree(int mode) throws IOException {
+            SymbolList symbolList = new SymbolList(new ArrayList<>());
+            if(mode==1) {
+                symbolList.entryListFromFile();
+            }else {
+                symbolList.entryListFromKeyboard();
             }
-        });
-        symbolLists.add(symbolList);
+            symbolList.setUpProbability();
+            symbolList.getListSymbols().sort(new Comparator<Symbol>() {
+                @Override
+                public int compare(Symbol o1, Symbol o2) {
+                    return o1.getProbability()>o2.getProbability()?-1:1;
+                }
+            });
+            symbolLists.add(symbolList);
+            for (int i = 0; i < symbolLists.size(); i++) {
+                if(!symbolLists.get(i).isOperated()&&symbolLists.get(i).getListSymbols().size()>1){
+                    symbolLists.get(i).createConnection(symbolLists.get(i).getListSymbols());
+                    symbolLists.add(symbolLists.get(i).getLeft());
+                    symbolLists.add(symbolLists.get(i).getRight());
+                    i=0;
+                }
+            }
+        }
+        public void encodeText() throws IOException {
+            System.out.println("Source file: ");
+            File inputFile = new File("G:\\data\\ShannonCoursework.txt");
+            System.out.println("Binary output file: ");
+            File outputFile = new File("G:\\data\\ShannonCourseworkRes.bin");
+
+            FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+            DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+            Scanner scanner = new Scanner(inputFile);
+
+            while (scanner.hasNextLine()) {
+                String word = scanner.nextLine();
+                for (int i = 0; i < word.length(); i++) {
+                    char symbol = word.charAt(i);
+                    for (int j = 0; j < symbolLists.size(); j++) {
+                        if (symbolLists.get(j).getListSymbols().get(0).getSymbol() == symbol) {
+                            String code = symbolLists.get(j).getListSymbols().get(0).getCode();
+                            byte[] symbolCode = NodeList.convertToByte(code);
+                            for (int k = 0; k < symbolCode.length; k++) {
+                                dataOutputStream.writeByte(symbolCode[k]);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            dataOutputStream.close();
+            fileOutputStream.close();
+        }
+
+        public void decodeText() throws IOException {
+            System.out.println("Binary input file: ");
+            File inputFile = new File("G:\\data\\ShannonCourseworkRes.bin");
+            File outputFile = new File("G:\\data\\ShannonCourseworkDecode.txt");
+            System.out.println("Decoded output file: ");
+            FileWriter fileWriter = new FileWriter(outputFile);
+
+            FileInputStream fileInputStream = new FileInputStream(inputFile);
+            DataInputStream dataInputStream = new DataInputStream(fileInputStream);
+            String byteString = "";
+            while(true) {
+                String tempByteString;
+                byte byteCode;
+                try {
+                    byteCode = dataInputStream.readByte();
+                    tempByteString = Integer.toBinaryString(byteCode);
+                    tempByteString=tempByteString.substring(1);
+                } catch (EOFException e) {
+                    System.out.println("End file!");
+                    break;
+                }
+                byteString += tempByteString;
+                String checkCode = "";
+                for (int i = 0; i < byteString.length(); i++) {
+                    char symbol = byteString.charAt(i);
+                    checkCode += symbol;
+                    for (int j = 0; j < symbolLists.size(); j++) {
+                        if (symbolLists.get(j).getListSymbols().get(0).getCode().equals(checkCode)) {
+                            fileWriter.write(symbolLists.get(j).getListSymbols().get(0).getSymbol());
+                            byteString = "";
+                            checkCode = "";
+                            break;
+                        }
+                    }
+                }
+            }
+            fileInputStream.close();
+            dataInputStream.close();
+            fileWriter.close();
+
+
+        }
+
+//        public static void main(String[] args) {
+//            ShannonFano shannonFano = new ShannonFano(new ArrayList<>());
+//            try {
+//                shannonFano.createTree();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            try {
+//                shannonFano.encodeText();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            try {
+//                shannonFano.decodeText();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+    public void printNext(){
         for (int i = 0; i < symbolLists.size(); i++) {
-            if(!symbolLists.get(i).isOperated()&&symbolLists.get(i).getListSymbols().size()>1){
-                symbolLists.get(i).createConnection(symbolLists.get(i).getListSymbols());
-                symbolLists.add(symbolLists.get(i).getLeft());
-                symbolLists.add(symbolLists.get(i).getRight());
-                i=0;
+            SymbolList sf2 = symbolLists.get(i);
+            while (sf2!=null){
+                System.out.println("i = "+i+" value "+sf2);
+                sf2=sf2.getNext();
             }
-        }////////////
-        System.out.println(" CONNECTIONS:");
-        printConnections(symbolList);
-        System.out.println(" CODES:");
-        createCode(symbolList,"");
-        System.out.println(" RESULT NOT CLEAR");
-        printCodes(symbolLists);
-        System.out.println(" RESULT CLEAR");
-         symbols = clearList(symbolLists);
-        printCode(symbols);
-        System.out.println("NO DUBLLES? "+isDubble(symbols));
-
+        }
     }
-    public boolean isDubble(List<Symbol> symbols){
-        for (int i = 0; i < symbols.size(); i++) {
-            String code = symbols.get(i).getCode();
-            for (int j = i+1; j < symbols.size(); j++) {
-                if(code.equals(symbols.get(j).getCode())){
+    public void printCodes(){
+        for (SymbolList element:symbolLists) {
+            System.out.println("Symbol: "+element.getListSymbols().get(0).getSymbol()+" code: "+element.getCode());
+        }
+    }
+    public boolean isDubble(){
+        for (int i = 0; i < symbolLists.size(); i++) {
+            String code = symbolLists.get(i).getCode();
+            for (int j = i+1; j < symbolLists.size(); j++) {
+                if(code.equals(symbolLists.get(j).getCode())){
                     System.out.println(" DUBBLE");
                     return false;
                 }
             }
         }
+        for (int i = 0; i < symbolLists.size(); i++) {
+            String code = symbolLists.get(i).getCode();
+            String coded="";
+            for (int j = 0; j < code.length(); j++) {
+                coded += code.charAt(j);
+                for (int k = i+1; k < symbolLists.size(); k++) {
+                    if (symbolLists.get(k).getCode().equals(coded)) {
+                        System.out.println(" ERROR DUBBLLES \n SYMBOL1 "+symbolLists.get(k).getCode() + " CODE "+ coded+" CUR CODE "+code);
+                        return false;
+                    }
+                }
+            }
+        }
         return true;
     }
-    public void createCode(SymbolList symbolList, String code){
-        if(symbolList.getLeft()==null){
-            code=symbolList.getWeight()+code;
-            code=code.substring(0,code.length()-1);
-            symbolList.setCode(code);
-            System.out.println(" END CODE: symbol: "+symbolList.getListSymbols().get(0)+" code: "+code);
-            code=code.substring(0,code.length()-1);
-            return;
-        }
 
-        System.out.println(symbolList);
-        code=symbolList.getWeight()+code;
-        System.out.println(code);
-        createCode(symbolList.getLeft(),code);
-        createCode(symbolList.getRight(),code);
+    public void createCode() {
+        for (int i = 0; i < symbolLists.size(); i++) {
+            String code = "";
+            SymbolList tempNode = symbolLists.get(i);
+            while (tempNode.getNext() != null) {
+                code += tempNode.getWeight();
+                tempNode = tempNode.getNext();
+            }
+            StringBuilder temp = new StringBuilder(code);
+            temp.reverse();
+            code = temp.toString();
+            symbolLists.get(i).setCode(code);
+        }
     }
+
     public void printConnections(SymbolList symbolList){
         if(symbolList==null){
             return;
@@ -81,29 +193,14 @@ public class ShannonFano {
         printConnections(symbolList.getRight());
     }
 
-//    public void clearList(List<SymbolList> symbolLists){
-//        Iterator<SymbolList> iterator = symbolLists.iterator();
-//        while (iterator.hasNext()){
-//            if(iterator.next().getListSymbols().size()>1){
-//                iterator.remove();
-//            }
-//        }
-//    }
-
-    public List<Symbol> clearList(List<SymbolList> symbolLists){
-        List<Symbol> symbols = new ArrayList<>();
-        for (SymbolList element:symbolLists) {
-            if(element.getListSymbols().size()==1) {
-                symbols.add(element.getListSymbols().get(0));
+    public void clearList(){
+        Iterator<SymbolList> iterator = symbolLists.iterator();
+        while (iterator.hasNext()){
+            SymbolList sf2M = iterator.next();
+            if(sf2M.getListSymbols().size()!=1){
+                iterator.remove();
             }
         }
-        Collections.sort(symbols, new Comparator<Symbol>() {
-            @Override
-            public int compare(Symbol o1, Symbol o2) {
-                return (o1.getSymbol()-o2.getSymbol());
-            }
-        });
-        return symbols;
     }
     public void printCode(List<Symbol> symbolLists){
         for (Symbol element:symbolLists) {
@@ -115,13 +212,48 @@ public class ShannonFano {
             System.out.println("Symbol: "+element.getListSymbols().get(0).getSymbol()+" code: "+element.getCode());
         }
     }
+//    System.out.println(" CONNECTIONS:");
+//    printConnections(symbolList);
+//    System.out.println(" CODES:");
+//    //createCode(symbolList,"");
+//    createCode();
+//    printCodes(symbolLists);
+//    System.out.println(" RESULT CLEAR");
+//    clearList(symbolLists);
+//            System.out.println(" PRINT NEXT");
+//    printNext();
+//            System.out.println(" PRINT CODES");
+//    printCodes();
+//    //   printCode(symbols);
+//            System.out.println("NO DUBLLES? "+isDubble());
 
-    public static void main(String[] args) {
-        ShannonFano shannonFano = new ShannonFano(new ArrayList<>());
-        try {
-            shannonFano.createTree();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
+
+//  Create new Symbol list of SymbolList list
+//    public void clearList(List<SymbolList> symbolLists){
+//        Iterator<SymbolList> iterator = symbolLists.iterator();
+//        while (iterator.hasNext()){
+//            if(iterator.next().getListSymbols().size()>1){
+//                iterator.remove();
+//            }
+//        }
+//    }
+//  Create code by recursion
+//        public void createCode(SF2 symbolList, String code){
+//            if(symbolList.getLeft()==null){
+//                code=symbolList.getWeight()+code;
+//                code=code.substring(0,code.length()-1);
+//                symbolList.setCode(code);
+//                System.out.println(" END CODE: symbol: "+symbolList.getListSymbols().get(0)+" code: "+code);
+//                return;
+//            }
+//
+//            System.out.println(symbolList);
+//            code=symbolList.getWeight()+code;
+//            System.out.println(code);
+//            createCode(symbolList.getLeft(),code);
+//            createCode(symbolList.getRight(),code);
+//        }
+
+
+

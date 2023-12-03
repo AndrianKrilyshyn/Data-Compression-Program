@@ -42,7 +42,7 @@ public class Huffman implements Command {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //nodeList.printList(nodeList.getNodeList());
+        nodeList.printList(nodeList.getNodeList());
         try {
             nodeList.decodeText();
             System.out.println(" Text decoded");
