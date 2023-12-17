@@ -68,29 +68,29 @@ public class Main {
     }
 
 
-    public static void huffmanMethod(int mode) throws IOException {
-        NodeList nodeList = new NodeList(new ArrayList<>(), new ArrayList<>());
-        if(mode==1){
-            nodeList.entryListFromFile();
-        }else
-            nodeList.entryListFromKeyboard();
-        nodeList.createTree();
-        nodeList.createCode();
-        //nodeList.createDictionary();
-        nodeList.printConnections();
-        nodeList.encodeText();
-        nodeList.printList(nodeList.getNodeList());
-        nodeList.decodeText();
-
-
-    }
-    public static void lzwMethod(int mode) throws IOException {
-        LZWMethod lzw = new LZWMethod(new Dictionary(new ArrayList<>()));
-        lzw.encodeText(mode);
-        lzw.decodeText();
-
-
-    }
+//    public static void huffmanMethod(int mode) throws IOException {
+//        NodeList nodeList = new NodeList(new ArrayList<>(), new ArrayList<>());
+//        if(mode==1){
+//            nodeList.entryListFromFile();
+//        }else
+//            nodeList.entryListFromKeyboard();
+//        nodeList.createTree();
+//        nodeList.createCode();
+//        //nodeList.createDictionary();
+//        nodeList.printConnections();
+//        nodeList.encodeText();
+//        nodeList.printList(nodeList.getNodeList());
+//        nodeList.decodeText();
+//
+//
+//    }
+//    public static void lzwMethod(int mode) throws IOException {
+//        LZWMethod lzw = new LZWMethod(new Dictionary(new ArrayList<>()));
+//        lzw.encodeText(mode);
+//        lzw.decodeText();
+//
+//
+//    }
 }
 
 

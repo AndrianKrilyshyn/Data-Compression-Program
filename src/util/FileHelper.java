@@ -36,7 +36,7 @@ public class FileHelper {
         return file;
     }
     public static String getFilePath() {
-        System.out.print("Enter path to file: ");
+        System.out.print(" ▲ Enter path to file: ");
         Scanner scanner = new Scanner(System.in);
         String filePath = scanner.nextLine();
         return filePath;

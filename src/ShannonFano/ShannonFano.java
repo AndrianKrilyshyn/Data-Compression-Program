@@ -1,6 +1,7 @@
 package ShannonFano;
 
 import Huffman.NodeList;
+import util.FileHelper;
 
 import java.io.*;
 import java.util.*;
@@ -13,12 +14,13 @@ public class ShannonFano {
             this.symbolLists = symbolLists;
         }
 
-        public void createTree(int mode) throws IOException {
+        public File createTree(int mode) throws IOException {
             SymbolList symbolList = new SymbolList(new ArrayList<>());
+            File file;
             if(mode==1) {
-                symbolList.entryListFromFile();
+                file=symbolList.entryListFromFile();
             }else {
-                symbolList.entryListFromKeyboard();
+                file=symbolList.entryListFromKeyboard();
             }
             symbolList.setUpProbability();
             symbolList.getListSymbols().sort(new Comparator<Symbol>() {
@@ -36,12 +38,13 @@ public class ShannonFano {
                     i=0;
                 }
             }
+            return file;
         }
-        public void encodeText() throws IOException {
-            System.out.println("Source file: ");
-            File inputFile = new File("G:\\data\\ShannonCoursework.txt");
-            System.out.println("Binary output file: ");
-            File outputFile = new File("G:\\data\\ShannonCourseworkRes.bin");
+        public File encodeText(File inputFile) throws IOException {
+            System.out.println("Source file ");
+           // File inputFile = new File("G:\\data\\ShannonCoursework.txt");
+            System.out.println("Binary output file ");
+            File outputFile = new File("G:\\data\\ShannonCourseworkRes.bin");//FileHelper.openFile();
 
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
@@ -66,13 +69,14 @@ public class ShannonFano {
 
             dataOutputStream.close();
             fileOutputStream.close();
+            return outputFile;
         }
 
-        public void decodeText() throws IOException {
-            System.out.println("Binary input file: ");
-            File inputFile = new File("G:\\data\\ShannonCourseworkRes.bin");
-            File outputFile = new File("G:\\data\\ShannonCourseworkDecode.txt");
-            System.out.println("Decoded output file: ");
+        public void decodeText(File inputFile) throws IOException {
+            //System.out.println("Binary input file: ");
+            //File inputFile = new File("G:\\data\\ShannonCourseworkRes.bin");
+            System.out.println(" Decoded output file: ");
+            File outputFile = new File("G:\\data\\ShannonCourseworkDecode.txt");//FileHelper.openFile();
             FileWriter fileWriter = new FileWriter(outputFile);
 
             FileInputStream fileInputStream = new FileInputStream(inputFile);
@@ -86,7 +90,7 @@ public class ShannonFano {
                     tempByteString = Integer.toBinaryString(byteCode);
                     tempByteString=tempByteString.substring(1);
                 } catch (EOFException e) {
-                    System.out.println("End file!");
+                    //System.out.println("End file!");
                     break;
                 }
                 byteString += tempByteString;

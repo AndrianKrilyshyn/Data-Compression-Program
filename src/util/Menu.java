@@ -1,9 +1,6 @@
 package util;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import Command.*;
 
@@ -25,15 +22,22 @@ private void setUp(){
     public void execute() {
         setUp();
         Scanner scanner = new Scanner(System.in);
+        int choice;
         while (true) {
             this.getMenu();
             System.out.print(" ▼ Enter number: ");
-            int choice = scanner.nextInt();
+            try {
+                choice = scanner.nextInt();
+            }catch (InputMismatchException e){
+                System.out.println(" It's not number!");
+                scanner.nextLine();
+                continue;
+            }
             scanner.nextLine();
             switch (choice){
                 case 1,2,3: commands.get(choice).execute(); break;
                 case 4: System.out.println(" Bye bye"); return;
-                default: System.out.println(" Error!"); break;
+                default: System.out.println(" Wrong number!"); break;
             }
         }
     }

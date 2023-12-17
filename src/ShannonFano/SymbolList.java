@@ -2,6 +2,8 @@ package ShannonFano;
 
 
 
+import util.FileHelper;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,7 +22,7 @@ public class SymbolList {
         this.listSymbols=listSymbols;
     }
 
-    public void entryListFromFile() throws IOException {
+    public File entryListFromFile() throws IOException {
         System.out.println(" Source file");
         // File file = FileHelper.openFile();
         File file = new File("G:\\data\\ShannonCoursework.txt");
@@ -35,11 +37,15 @@ public class SymbolList {
                 numberOfSymbols++;
             }
         }
+        return file;
     }
-    public void entryListFromKeyboard() throws IOException {
-        System.out.print("\n Needed temporary file ");
-        //  FileWriter fileWriter = FileHelper.newFilewriter();
-        FileWriter fileWriter = new FileWriter("G:\\data\\ShannonCoursework.txt");//newFilewriter();
+    public File entryListFromKeyboard() throws IOException {
+        System.out.println("\n Needed temporary file ");
+        File file = new File("G:\\data\\ShannonCoursework.txt");
+        //File file = FileHelper.openFile();
+        FileWriter fileWriter = new FileWriter(file);
+        //FileWriter fileWriter = new FileWriter("G:\\data\\ShannonCoursework.txt");//newFilewriter();
+        System.out.println(" Enter text:");
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String word = scanner.nextLine();
@@ -52,6 +58,7 @@ public class SymbolList {
             }
         }
         fileWriter.close();
+        return file;
     }
 
     public void createNewSymbol(char symbol) {
@@ -75,7 +82,7 @@ public class SymbolList {
         }
     }
     public void createConnection(List<Symbol> listSymbols) {
-        System.out.println(listSymbols);
+        //System.out.println(listSymbols);
         int i = 0;
         int j = listSymbols.size() - 1;
         if(listSymbols.size()>2) {

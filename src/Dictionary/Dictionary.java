@@ -3,14 +3,21 @@ package Dictionary;
 
 import LZW.Symbol;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 public class  Dictionary{
     private  List<Symbol> dictionary;
 
     public Dictionary(List<Symbol> dictionary) {
         this.dictionary = dictionary;
-        generateBaseDictionary();
+        try {
+            generateBaseDictionary();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Symbol> getDictionary() {
@@ -21,7 +28,7 @@ public class  Dictionary{
         this.dictionary = dictionary;
     }
 
-    private void generateBaseDictionary(){
+    private void generateBaseDictionary() throws IOException {
         for (int i = 1040, index = 0; i < 1104; i++,index++) {
             this.dictionary.add(new Symbol(index,(char) i));
         }
@@ -34,6 +41,12 @@ public class  Dictionary{
         for (int i = 32, index = dictionary.size()+1; i < 58; i++, index++) {
             this.dictionary.add(new Symbol(index,(char) i));
         }
+//        Random random = new Random();
+//        FileWriter fileWriter = new FileWriter("G:\\data\\1.txt");
+//        for (int i = 0; i < 100_000_000; i++) {
+//            char c = (char)random.nextInt(1040,1104);
+//            fileWriter.write(c);
+//        }
 
     }
 
